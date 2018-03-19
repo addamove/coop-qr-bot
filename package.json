@@ -1,0 +1,36 @@
+{
+  "name": "test-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./src/index.js",
+    "dev": "watch -rm  *.js node ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/addamove/testing-bot-sdk.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/addamove/testing-bot-sdk/issues"
+  },
+  "homepage": "https://github.com/addamove/testing-bot-sdk#readme",
+  "description": "",
+  "dependencies": {
+    "@dlghq/dialog-api-utils": "^0.1.2",
+    "@dlghq/dialog-bot-sdk": "^1.2.0",
+    "dotenv": "^4.0.0",
+    "moment": "^2.20.1",
+    "prettier-eslint": "^8.8.1",
+    "qrcode": "^1.2.0",
+    "rethinkdbdash": "^2.3.31",
+    "vcards-js": "^2.8.0",
+    "watch-js": "0.0.7"
+  },
+  "devDependencies": {
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.8.0"
+  }
+}
