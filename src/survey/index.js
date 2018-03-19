@@ -89,7 +89,7 @@ function AskQuestions(bot, peer, message) {
           config.questions[config.users[peer.id].i - 1]
         }`,
       );
-      config.users[peer.id].i--;
+      config.users[peer.id].i -= 1;
     }
   }
   if (config.users[peer.id].i === config.questions.length) {
@@ -99,21 +99,16 @@ function AskQuestions(bot, peer, message) {
     bot.sendTextMessage(
       peer,
       `
-                •	Ваши ФИО - ${config.users[peer.id].anwsers.fio}
-    
-                •	Дата рождения - ${config.users[peer.id].anwsers.birth}
-                •	Ваш регион - ${config.users[peer.id].anwsers.region}
-    
-                •	Компания - ${config.users[peer.id].anwsers.company}
-                •	Ваша должность - ${config.users[peer.id].anwsers.vacation}
-    
-                •	Статус - ${config.users[peer.id].anwsers.status}
-                      
-                      `,
+•Ваши ФИО - ${config.users[peer.id].anwsers.fio}
+•Дата рождения - ${config.users[peer.id].anwsers.birth}
+•Ваш регион - ${config.users[peer.id].anwsers.region}
+•Компания - ${config.users[peer.id].anwsers.company}
+•Ваша должность - ${config.users[peer.id].anwsers.vacation}
+•Статус - ${config.users[peer.id].anwsers.status}`,
     );
     checking(bot, peer);
   }
-  config.users[peer.id].i++;
+  config.users[peer.id].i += 1;
 }
 
 function sendVerificationInfoToadmin(bot, peer) {
@@ -266,12 +261,12 @@ async function adminVerification(bot, event) {
         \n Это так просто!\n`,
     );
 
-    if (user.nick != 'null') {
+    if (user.nick !== 'null') {
       try {
         await QR.makeQR(user.nick, config.users[val[2]], config.users[val[2]].peer, bot);
         bot.sendImageMessage(
           config.users[val[2]].peer,
-          path.join(__dirname, `./${config.users[val[2]].peer.id}_invintation.png`),
+          path.join(__dirname, `../${config.users[val[2]].peer.id}_invintation.png`),
         );
       } catch (err) {
         await bot.sendTextMessage(
@@ -288,7 +283,7 @@ async function adminVerification(bot, event) {
 
     let once = false; // onMessage only once
     bot.sendTextMessage(adminPeer, 'Напишите причину отказа');
-    bot.onMessage(async (adminPeer, message) => {
+    bot.onMessage(async (message) => {
       if (once === false) {
         bot.sendTextMessage(
           config.users[val[2]].peer,

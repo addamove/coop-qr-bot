@@ -61,7 +61,7 @@ async function initUser(peer, bot) {
         );
       }
     } else {
-      config.users[peer.id] = query[0];
+      [config.users[peer.id]] = query;
 
       // первое сообщение
       bot.sendInteractiveMessage(

@@ -18,7 +18,6 @@ bot.onMessage(async (peer, message) => {
   const user = await bot.getUser(peer.id);
   if (peer.type !== 'group') {
     if (!user.nick) {
-      // если нету никнейма у юзера
       users.makeNick(state, message, bot, peer);
     } else if (typeof config.users[peer.id] === 'undefined' && peer.id !== config.admins[0].id) {
       // инициализируем нового юзера
@@ -40,13 +39,13 @@ bot.onMessage(async (peer, message) => {
       // Переделываем QRкод если пользователь написал визитка или моя визитка
       if (
         (config.users[peer.id].verified === true &&
-          message.content.text.toUpperCase() === 'ВИЗИТКА') ||
+          message.content.text.toLowerCase() === 'визитка') ||
         (config.users[peer.id].verified === true &&
-          message.content.text.toUpperCase() === 'МОЯ ВИЗИТКА') ||
+          message.content.text.toLowerCase() === 'моя визитка') ||
         (config.users[peer.id].verified === true &&
-          message.content.text.toUpperCase() === '"МОЯ ВИЗИТКА"') ||
+          message.content.text.toLowerCase() === '"моя визитка"') ||
         (config.users[peer.id].verified === true &&
-          message.content.text.toUpperCase() === '"ВИЗИТКА"')
+          message.content.text.toLowerCase() === '"визитка"')
       ) {
         QR.remakeQR(bot, peer, user);
       }
@@ -94,31 +93,32 @@ bot.onInteractiveEvent(async (event) => {
 
   if (event.value === 'start' && config.users[event.peer.id].i === 0) {
     bot.sendTextMessage(event.peer, config.questions[0]);
-    // начинаем верифицировать пользователя т е теперь он при отправке сообщения попадет в секцию где задаются вопросы
+    // теперь при отправке сообщения попадет в секцию где задаются вопросы
     config.users[String(event.peer.id)].verification = true;
-    config.users[event.peer.id].i++;
+    config.users[event.peer.id].i += 1;
   }
 
-  if (event.value === 'complete' && config.users[event.peer.id].verification == true) {
+  if (event.value === 'complete' && config.users[event.peer.id].verification === true) {
     survey.sendVerificationInfoToadmin(bot, event.peer);
-    // больше не попадем в секцию где задаются вопросы и отключаем возможность многократно отправить админу информацию о себе
+    // не попадем в секцию где задаются вопросы
+    //  отключаем возможность многократно отправить админу информацию
     config.users[event.peer.id].verification = false;
-  } //  работает
+  }
 
   // ответ на селект редактирования
   if (
-    event.value == 'fio_0' ||
-    event.value == 'birth_1' ||
-    event.value == 'region_2' ||
-    event.value == 'vacation_4' ||
-    event.value == 'status_5' ||
-    event.value == 'company_3'
+    event.value === 'fio_0' ||
+    event.value === 'birth_1' ||
+    event.value === 'region_2' ||
+    event.value === 'vacation_4' ||
+    event.value === 'status_5' ||
+    event.value === 'company_3'
   ) {
     const UserSelect = event.value.split('_'); // array[fio,0]
     bot.sendTextMessage(event.peer, `Вы хотите изменить: ${config.questions[UserSelect[1]]}`); // отсылаем вопрос под номером кнопки
 
     config.users[event.peer.id].edit = true; // посылаем в секцию редактирования
-    config.users[event.peer.id].editValue = UserSelect[0]; // какой пункт надо изменить
+    [config.users[event.peer.id].editValue] = UserSelect; // какой пункт надо изменить
   }
 
   // потверждение верификациN админом
