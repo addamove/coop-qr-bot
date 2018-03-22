@@ -245,16 +245,16 @@ async function newSurvey(peer, bot) {
 async function adminVerification(bot, event) {
   const adminPeer = config.admins[0];
 
-  //
   const val = event.value.split('_'); // пример 'ver_true_' + JSON.stringify(config.users[peer.id].peer.id)
+  const client = config.users[val[2]];
   if (val[1] === 'true') {
     // админ потвердил
     bot.sendTextMessage(adminPeer, 'Потвреждение отправлено');
-    const user = await bot.getUser(config.users[val[2]].peer.id);
-    config.users[val[2]].verified = true;
+    const user = await bot.getUser(client.peer.id);
+    client.verified = true;
     // config.users[val[2]].peer - пир того кто пишет боту adminPeer - пир админа
     bot.sendTextMessage(
-      config.users[val[2]].peer,
+      client.peer,
       `Ваш аккаунт потвердили
         Чтобы вас добавили в контакты кооп конекта, достаточно отсканировать qrcode программой на смартфоне и сохранить контакт на устройстве. 
         Новый контакт в coop connect добавится автоматически.
@@ -263,20 +263,20 @@ async function adminVerification(bot, event) {
 
     if (user.nick !== 'null') {
       try {
-        await QR.makeQR(user.nick, config.users[val[2]], config.users[val[2]].peer, bot);
+        await QR.makeQR(user.nick, client, client.peer, bot);
         bot.sendImageMessage(
-          config.users[val[2]].peer,
-          path.join(__dirname, `../${config.users[val[2]].peer.id}_invintation.png`),
+          client.peer,
+          path.join(__dirname, `../${client.peer.id}_invintation.png`),
         );
       } catch (err) {
         await bot.sendTextMessage(
-          config.users[val[2]].peer,
+          client.peer,
           'К сожалению, наши сервера не ответили вам взаимностью.  Мы работаем над этим и вскоре исправим ситуацию.',
         );
         console.log(err);
       }
     } else {
-      bot.sendTextMessage(config.users[val[2]].peer, 'Установите никнейм в настройках');
+      bot.sendTextMessage(client.peer, 'Установите никнейм в настройках');
     }
   } else {
     // сообщения с этим пиром уйдут админу
@@ -286,16 +286,16 @@ async function adminVerification(bot, event) {
     bot.onMessage(async (message) => {
       if (once === false) {
         bot.sendTextMessage(
-          config.users[val[2]].peer,
+          client.peer,
           ` *Вам отказали по причине*: "${
             message.content.text
           }"\nОтредактируйте свои данные и отправьте повторно`,
         );
         bot.sendTextMessage(adminPeer, 'Отказ отправлен');
 
-        survey.checking(bot, config.users[val[2]].peer);
+        survey.checking(bot, client.peer);
 
-        once = true; // костыль
+        once = true;
       }
     });
   }
