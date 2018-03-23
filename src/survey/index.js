@@ -67,7 +67,9 @@ function AskQuestions(bot, peer, message) {
     if (message.content.text.length < 99) {
       if (config.users[peer.id].i === 2) {
         if (moment(message.content.text, 'DD.MM.YYYY', true).isValid()) {
-          config.users[peer.id].anwsers[keys[config.users[peer.id].i - 1]] = message.content.text;
+          config.users[peer.id].anwsers[
+            keys[config.users[peer.id].i - 1]
+          ] = message.content.text.replace(/"'/g, '\x27');
           bot.sendTextMessage(peer, config.questions[config.users[peer.id].i]);
         } else {
           bot.sendTextMessage(
@@ -79,7 +81,9 @@ function AskQuestions(bot, peer, message) {
           config.users[peer.id].i -= 1;
         }
       } else {
-        config.users[peer.id].anwsers[keys[config.users[peer.id].i - 1]] = message.content.text;
+        config.users[peer.id].anwsers[
+          keys[config.users[peer.id].i - 1]
+        ] = message.content.text.replace(/"'/g, '\x27');
         bot.sendTextMessage(peer, config.questions[config.users[peer.id].i]);
       }
     } else {
@@ -186,7 +190,57 @@ async function edit(peer, message, bot) {
       ]
     } c ${oldVal} на ${config.users[peer.id].anwsers[config.users[peer.id].editValue]}`),
   );
-  survey.checking(bot, peer);
+  bot.sendInteractiveMessage(peer, 'Сейчас вы можете потвердить или отредактировать данные', [
+    {
+      actions: [
+        {
+          id: 's',
+          widget: {
+            type: 'button',
+            value: 'complete',
+            label: 'Потвердить',
+          },
+        },
+      ],
+    },
+    {
+      actions: [
+        {
+          id: 's',
+          widget: {
+            type: 'select',
+            label: 'Редактировать',
+            options: [
+              {
+                label: 'ФИО',
+                value: 'fio_0',
+              },
+              {
+                label: 'Дата рождения',
+                value: 'birth_1',
+              },
+              {
+                label: 'Регион',
+                value: 'region_2',
+              },
+              {
+                label: 'Должность',
+                value: 'vacation_4',
+              },
+              {
+                label: 'Статус',
+                value: 'status_5',
+              },
+              {
+                label: 'Компания',
+                value: 'company_3',
+              },
+            ],
+          },
+        },
+      ],
+    },
+  ]);
   config.users[peer.id].edit = false;
 }
 

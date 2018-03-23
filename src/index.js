@@ -121,7 +121,7 @@ bot.onInteractiveEvent(async (event) => {
     [config.users[event.peer.id].editValue] = UserSelect; // какой пункт надо изменить
   }
 
-  // потверждение верификациN админом
+  // потверждение верификации админом
   if (event.value.split('_')[0] === 'ver') {
     survey.adminVerification(bot, event);
   }
